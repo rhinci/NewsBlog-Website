@@ -9,7 +9,10 @@ from rest_framework import filters
 from django.db.models import Q
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.decorators import api_view, permission_classes
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
+#@method_decorator(csrf_exempt, name='dispatch')
 class ArticleApi(viewsets.ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
