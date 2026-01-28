@@ -7,7 +7,7 @@ from .serializers import ArticleSerializer, CommentSerializer, UserRegistrationS
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from django.db.models import Q
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.decorators import api_view, permission_classes
 
 class ArticleApi(viewsets.ModelViewSet):
@@ -68,8 +68,10 @@ class ArticleApi(viewsets.ModelViewSet):
 class CommentApi(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
+    permission_classes = []
+    
+    def perform_create(self, serializer):
+        serializer.save()
 
 @api_view(['POST'])
 @permission_classes([AllowAny])

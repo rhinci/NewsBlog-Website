@@ -9,10 +9,18 @@ class ArticleSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_date', 'user']
 
 class CommentSerializer(serializers.ModelSerializer):
+    article = serializers.PrimaryKeyRelatedField(
+        queryset=Article.objects.all(),
+        required=True
+    )
+    
     class Meta:
         model = Comment
-        fields = '__all__'
+        fields = ['id', 'text', 'date', 'article', 'author_name']
         read_only_fields = ['id', 'date']
+    
+    def create(self, validated_data):
+        return Comment.objects.create(**validated_data)
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])

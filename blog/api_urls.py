@@ -6,10 +6,16 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+from rest_framework_nested import routers
 
 router = DefaultRouter()
-router.register(r'articles', ArticleApi)
-router.register(r'comment', CommentApi)
+router.register(r'articles', ArticleApi, basename='articles')
+router.register(r'comments', CommentApi, basename='comments')
+
+
+articles_router = routers.NestedSimpleRouter(router, r'articles', lookup='article')
+articles_router.register(r'comments', CommentApi, basename='article-comments')
+
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -17,4 +23,5 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('register/', register_user, name='api_register'),
+    path('', include(articles_router.urls)),
 ]
